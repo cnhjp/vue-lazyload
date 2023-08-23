@@ -9,39 +9,35 @@
 
 Vue module for lazyloading images in your applications. Some of goals of this project worth noting include:
 
-* Be lightweight, powerful and easy to use
-* Work on any image type
-* Add loading class while image is loading
-* Supports both of Vue 1.0 and Vue 2.0
-
-
+- Be lightweight, powerful and easy to use
+- Work on any image type
+- Add loading class while image is loading
+- Supports both of Vue 1.0 and Vue 2.0
 
 # Table of Contents
 
-* [___Demo___](#demo)
-* [___Requirements___](#requirements)
-* [___Installation___](#installation)
-* [___Usage___](#usage)
- * [___Constructor Options___](#constructor-options)
- * [___Implementation___](#implementation)
-    * [___Basic___](#basic)
-    * [___Css state___](#css-state)
-* [___Methods___](#methods)
-  * [__Event hook__](#event-hook)
-  * [__LazyLoadHandler__](#lazyloadhandler)
-  * [__Performance__](#performance)
-* [___Authors && Contributors___](#authors-&&-Contributors)
-* [___License___](#license)
-
+- [**_Demo_**](#demo)
+- [**_Requirements_**](#requirements)
+- [**_Installation_**](#installation)
+- [**_Usage_**](#usage)
+- [**_Constructor Options_**](#constructor-options)
+- [**_Implementation_**](#implementation)
+  - [**_Basic_**](#basic)
+  - [**_Css state_**](#css-state)
+- [**_Methods_**](#methods)
+  - [**Event hook**](#event-hook)
+  - [**LazyLoadHandler**](#lazyloadhandler)
+  - [**Performance**](#performance)
+- [**_Authors && Contributors_**](#authors-&&-Contributors)
+- [**_License_**](#license)
 
 # Demo
 
-[___Demo___](http://hilongjw.github.io/vue-lazyload/)
+[**_Demo_**](http://hilongjw.github.io/vue-lazyload/)
 
 # Requirements
 
 - [Vue.js](https://github.com/vuejs/vue) `1.x` or `2.x`
-
 
 # Installation
 
@@ -71,7 +67,6 @@ CDN: [https://unpkg.com/vue-lazyload/vue-lazyload.js](https://unpkg.com/vue-lazy
   Vue.use(VueLazyload)
   ...
 </script>
-
 ```
 
 # Usage
@@ -79,30 +74,29 @@ CDN: [https://unpkg.com/vue-lazyload/vue-lazyload.js](https://unpkg.com/vue-lazy
 main.js:
 
 ```javascript
+import Vue from "vue";
+import App from "./App.vue";
+import VueLazyload from "vue-lazyload";
 
-import Vue from 'vue'
-import App from './App.vue'
-import VueLazyload from 'vue-lazyload'
-
-Vue.use(VueLazyload)
+Vue.use(VueLazyload);
 
 // or with options
-const loadimage = require('./assets/loading.gif')
-const errorimage = require('./assets/error.gif')
+const loadimage = require("./assets/loading.gif");
+const errorimage = require("./assets/error.gif");
 
 Vue.use(VueLazyload, {
   preLoad: 1.3,
   error: errorimage,
   loading: loadimage,
-  attempt: 1
-})
+  attempt: 1,
+});
 
 new Vue({
-  el: 'body',
+  el: "body",
   components: {
-    App
-  }
-})
+    App,
+  },
+});
 ```
 
 template:
@@ -110,7 +104,7 @@ template:
 ```html
 <ul>
   <li v-for="img in list">
-    <img v-lazy="img.src" >
+    <img v-lazy="img.src" />
   </li>
 </ul>
 ```
@@ -119,47 +113,49 @@ use `v-lazy-container` work with raw HTML
 
 ```html
 <div v-lazy-container="{ selector: 'img' }">
-  <img data-src="//domain.com/img1.jpg">
-  <img data-src="//domain.com/img2.jpg">
-  <img data-src="//domain.com/img3.jpg">  
+  <img data-src="//domain.com/img1.jpg" />
+  <img data-src="//domain.com/img2.jpg" />
+  <img data-src="//domain.com/img3.jpg" />
 </div>
 ```
 
 custom `error` and `loading` placeholder image
 
 ```html
-<div v-lazy-container="{ selector: 'img', error: 'xxx.jpg', loading: 'xxx.jpg' }">
-  <img data-src="//domain.com/img1.jpg">
-  <img data-src="//domain.com/img2.jpg">
-  <img data-src="//domain.com/img3.jpg">  
+<div
+  v-lazy-container="{ selector: 'img', error: 'xxx.jpg', loading: 'xxx.jpg' }"
+>
+  <img data-src="//domain.com/img1.jpg" />
+  <img data-src="//domain.com/img2.jpg" />
+  <img data-src="//domain.com/img3.jpg" />
 </div>
 ```
 
 ```html
 <div v-lazy-container="{ selector: 'img' }">
-  <img data-src="//domain.com/img1.jpg" data-error="xxx.jpg">
-  <img data-src="//domain.com/img2.jpg" data-loading="xxx.jpg">
-  <img data-src="//domain.com/img3.jpg">  
+  <img data-src="//domain.com/img1.jpg" data-error="xxx.jpg" />
+  <img data-src="//domain.com/img2.jpg" data-loading="xxx.jpg" />
+  <img data-src="//domain.com/img3.jpg" />
 </div>
 ```
 
 ## Constructor Options
 
-|key|description|default|options|
-|:---|---|---|---|
-| `preLoad`|proportion of pre-loading height|`1.3`|`Number`|
-|`error`|src of the image upon load fail|`'data-src'`|`String`
-|`loading`|src of the image while loading|`'data-src'`|`String`|
-|`attempt`|attempts count|`3`|`Number`|
-|`listenEvents`|events that you want vue listen for|`['scroll', 'wheel', 'mousewheel', 'resize', 'animationend', 'transitionend', 'touchmove']`| [Desired Listen Events](#desired-listen-events) |
-|`adapter`| dynamically modify the attribute of element |`{ }`| [Element Adapter](#element-adapter) |
-|`filter`| the image's listener filter |`{ }`| [Image listener filter](#image-listener-filter) |
-|`lazyComponent`| lazyload component | `false` | [Lazy Component](#lazy-component)
-| `dispatchEvent`|trigger the dom event|`false`|`Boolean`|
-| `throttleWait`|throttle wait|`200`|`Number`|
-| `observer`|use IntersectionObserver|`false`|`Boolean`|
-| `observerOptions`|IntersectionObserver options|{ rootMargin: '0px', threshold: 0.1 }|[IntersectionObserver](#intersectionobserver)|
-| `silent`|do not print debug info|`true`|`Boolean`|
+| key               | description                                 | default                                                                                     | options                                         |
+| :---------------- | ------------------------------------------- | ------------------------------------------------------------------------------------------- | ----------------------------------------------- |
+| `preLoad`         | proportion of pre-loading height            | `1.3`                                                                                       | `Number`                                        |
+| `error`           | src of the image upon load fail             | `'data-src'`                                                                                | `String`                                        |
+| `loading`         | src of the image while loading              | `'data-src'`                                                                                | `String`                                        |
+| `attempt`         | attempts count                              | `3`                                                                                         | `Number`                                        |
+| `listenEvents`    | events that you want vue listen for         | `['scroll', 'wheel', 'mousewheel', 'resize', 'animationend', 'transitionend', 'touchmove']` | [Desired Listen Events](#desired-listen-events) |
+| `adapter`         | dynamically modify the attribute of element | `{ }`                                                                                       | [Element Adapter](#element-adapter)             |
+| `filter`          | the image's listener filter                 | `{ }`                                                                                       | [Image listener filter](#image-listener-filter) |
+| `lazyComponent`   | lazyload component                          | `false`                                                                                     | [Lazy Component](#lazy-component)               |
+| `dispatchEvent`   | trigger the dom event                       | `false`                                                                                     | `Boolean`                                       |
+| `throttleWait`    | throttle wait                               | `200`                                                                                       | `Number`                                        |
+| `observer`        | use IntersectionObserver                    | `false`                                                                                     | `Boolean`                                       |
+| `observerOptions` | IntersectionObserver options                | { rootMargin: '0px', threshold: 0.1 }                                                       | [IntersectionObserver](#intersectionobserver)   |
+| `silent`          | do not print debug info                     | `true`                                                                                      | `Boolean`                                       |
 
 ### Desired Listen Events
 
@@ -169,17 +165,16 @@ of listener names.
 ```javascript
 Vue.use(VueLazyload, {
   preLoad: 1.3,
-  error: 'dist/error.png',
-  loading: 'dist/loading.gif',
+  error: "dist/error.png",
+  loading: "dist/loading.gif",
   attempt: 1,
   // the default is ['scroll', 'wheel', 'mousewheel', 'resize', 'animationend', 'transitionend']
-  listenEvents: [ 'scroll' ]
-})
+  listenEvents: ["scroll"],
+});
 ```
 
 This is useful if you are having trouble with this plugin resetting itself to loading
 when you have certain animations and transitions taking place
-
 
 ### Image listener filter
 
@@ -187,44 +182,53 @@ dynamically modify the src of image
 
 ```javascript
 Vue.use(vueLazy, {
-    filter: {
-      progressive (listener, options) {
-          const isCDN = /qiniudn.com/
-          if (isCDN.test(listener.src)) {
-              listener.el.setAttribute('lazy-progressive', 'true')
-              listener.loading = listener.src + '?imageView2/1/w/10/h/10'
-          }
-      },
-      webp (listener, options) {
-          if (!options.supportWebp) return
-          const isCDN = /qiniudn.com/
-          if (isCDN.test(listener.src)) {
-              listener.src += '?imageView2/2/format/webp'
-          }
+  filter: {
+    progressive(listener, options) {
+      const isCDN = /qiniudn.com/;
+      if (isCDN.test(listener.src)) {
+        listener.el.setAttribute("lazy-progressive", "true");
+        listener.loading = listener.src + "?imageView2/1/w/10/h/10";
       }
-    }
-})
+    },
+    webp(listener, options) {
+      if (!options.supportWebp) return;
+      const isCDN = /qiniudn.com/;
+      if (isCDN.test(listener.src)) {
+        listener.src += "?imageView2/2/format/webp";
+      }
+    },
+  },
+});
 ```
-
 
 ### Element Adapter
 
 ```javascript
 Vue.use(vueLazy, {
-    adapter: {
-        loaded ({ bindType, el, naturalHeight, naturalWidth, $parent, src, loading, error, Init }) {
-            // do something here
-            // example for call LoadedHandler
-            LoadedHandler(el)
-        },
-        loading (listender, Init) {
-            console.log('loading')
-        },
-        error (listender, Init) {
-            console.log('error')
-        }
-    }
-})
+  adapter: {
+    loaded({
+      bindType,
+      el,
+      naturalHeight,
+      naturalWidth,
+      $parent,
+      src,
+      loading,
+      error,
+      Init,
+    }) {
+      // do something here
+      // example for call LoadedHandler
+      LoadedHandler(el);
+    },
+    loading(listender, Init) {
+      console.log("loading");
+    },
+    error(listender, Init) {
+      console.log("error");
+    },
+  },
+});
 ```
 
 ### IntersectionObserver
@@ -238,23 +242,23 @@ Vue.use(vueLazy, {
 
   // optional
   observerOptions: {
-    rootMargin: '0px',
-    threshold: 0.1
-  }
-})
+    rootMargin: "0px",
+    threshold: 0.1,
+  },
+});
 ```
 
-
 ### Lazy Component
+
 ```javascript
 Vue.use(VueLazyload, {
-  lazyComponent: true
+  lazyComponent: true,
 });
 ```
 
 ```html
 <lazy-component @show="handler">
-  <img class="mini-cover" :src="img.src" width="100%" height="400">
+  <img class="mini-cover" :src="img.src" width="100%" height="400" />
 </lazy-component>
 
 <script>
@@ -269,13 +273,14 @@ Vue.use(VueLazyload, {
   }
 </script>
 ```
+
 Use in list
+
 ```html
-<lazy-component v-for="(item, index) in list" :key="item.src" >
-  <img class="mini-cover" :src="item.src" width="100%" height="400">
+<lazy-component v-for="(item, index) in list" :key="item.src">
+  <img class="mini-cover" :src="item.src" width="100%" height="400" />
 </lazy-component>
 ```
-
 
 ## Implementation
 
@@ -285,36 +290,42 @@ vue-lazyload will set this img element's `src` with `imgUrl` string
 
 ```html
 <script>
-export default {
-  data () {
-    return {
-      imgObj: {
-        src: 'http://xx.com/logo.png',
-        error: 'http://xx.com/error.png',
-        loading: 'http://xx.com/loading-spin.svg'
-      },
-      imgUrl: 'http://xx.com/logo.png' // String
-    }
-  }
-}
+  export default {
+    data() {
+      return {
+        imgObj: {
+          src: "http://xx.com/logo.png",
+          error: "http://xx.com/error.png",
+          loading: "http://xx.com/loading-spin.svg",
+        },
+        imgUrl: "http://xx.com/logo.png", // String
+      };
+    },
+  };
 </script>
 
 <template>
   <div ref="container">
-     <img v-lazy="imgUrl"/>
-     <div v-lazy:background-image="imgUrl"></div>
+    <img v-lazy="imgUrl" />
+    <div v-lazy:background-image="imgUrl"></div>
 
-     <!-- with customer error and loading -->
-     <img v-lazy="imgObj"/>
-     <div v-lazy:background-image="imgObj"></div>
+    <!-- with customer error and loading -->
+    <img v-lazy="imgObj" />
+    <div v-lazy:background-image="imgObj"></div>
 
-     <!-- Customer scrollable element -->
-     <img v-lazy.container ="imgUrl"/>
-     <div v-lazy:background-image.container="img"></div>
+    <!-- Customer scrollable element -->
+    <img v-lazy.container="imgUrl" />
+    <div v-lazy:background-image.container="img"></div>
 
     <!-- srcset -->
-    <img v-lazy="'img.400px.jpg'" data-srcset="img.400px.jpg 400w, img.800px.jpg 800w, img.1200px.jpg 1200w">
-    <img v-lazy="imgUrl" :data-srcset="imgUrl' + '?size=400 400w, ' + imgUrl + ' ?size=800 800w, ' + imgUrl +'/1200.jpg 1200w'" />
+    <img
+      v-lazy="'img.400px.jpg'"
+      data-srcset="img.400px.jpg 400w, img.800px.jpg 800w, img.1200px.jpg 1200w"
+    />
+    <img
+      v-lazy="imgUrl"
+      :data-srcset="imgUrl' + '?size=400 400w, ' + imgUrl + ' ?size=800 800w, ' + imgUrl +'/1200.jpg 1200w'"
+    />
   </div>
 </template>
 ```
@@ -323,35 +334,35 @@ export default {
 
 There are three states while img loading
 
-`loading`  `loaded`  `error`
+`loading` `loaded` `error`
 
 ```html
-<img src="imgUrl" lazy="loading">
-<img src="imgUrl" lazy="loaded">
-<img src="imgUrl" lazy="error">
+<img src="imgUrl" lazy="loading" />
+<img src="imgUrl" lazy="loaded" />
+<img src="imgUrl" lazy="error" />
 ```
 
 ```html
 <style>
-  img[lazy=loading] {
+  img[lazy="loading"] {
     /*your style here*/
   }
-  img[lazy=error] {
+  img[lazy="error"] {
     /*your style here*/
   }
-  img[lazy=loaded] {
+  img[lazy="loaded"] {
     /*your style here*/
   }
   /*
   or background-image
   */
-  .yourclass[lazy=loading] {
+  .yourclass[lazy="loading"] {
     /*your style here*/
   }
-  .yourclass[lazy=error] {
+  .yourclass[lazy="error"] {
     /*your style here*/
   }
-  .yourclass[lazy=loaded] {
+  .yourclass[lazy="loaded"] {
     /*your style here*/
   }
 </style>
@@ -373,30 +384,36 @@ There are three states while img loading
 
 #### Arguments:
 
- * `{string} event`
- * `{Function} callback`
+- `{string} event`
+- `{Function} callback`
 
 #### Example
 
 ```javascript
-vm.$Lazyload.$on('loaded', function ({ bindType, el, naturalHeight, naturalWidth, $parent, src, loading, error }, formCache) {
-  console.log(el, src)
-})
+vm.$Lazyload.$on(
+  "loaded",
+  function (
+    { bindType, el, naturalHeight, naturalWidth, $parent, src, loading, error },
+    formCache,
+  ) {
+    console.log(el, src);
+  },
+);
 ```
 
 #### `vm.$Lazyload.$once`
 
 #### Arguments:
 
- * `{string} event`
- * `{Function} callback`
+- `{string} event`
+- `{Function} callback`
 
 #### Example
 
 ```javascript
-vm.$Lazyload.$once('loaded', function ({ el, src }) {
-  console.log(el, src)
-})
+vm.$Lazyload.$once("loaded", function ({ el, src }) {
+  console.log(el, src);
+});
 ```
 
 #### `vm.$Lazyload.$off`
@@ -405,18 +422,18 @@ If only the event is provided, remove all listeners for that event
 
 #### Arguments:
 
- * `{string} event`
- * `{Function} callback`
+- `{string} event`
+- `{Function} callback`
 
 #### Example
 
 ```javascript
-function handler ({ el, src }, formCache) {
-  console.log(el, src)
+function handler({ el, src }, formCache) {
+  console.log(el, src);
 }
-vm.$Lazyload.$on('loaded', handler)
-vm.$Lazyload.$off('loaded', handler)
-vm.$Lazyload.$off('loaded')
+vm.$Lazyload.$on("loaded", handler);
+vm.$Lazyload.$off("loaded", handler);
+vm.$Lazyload.$off("loaded");
 ```
 
 ### LazyLoadHandler
@@ -428,17 +445,15 @@ Manually trigger lazy loading position calculation
 #### Example
 
 ```javascript
-
-this.$Lazyload.lazyLoadHandler()
-
+this.$Lazyload.lazyLoadHandler();
 ```
 
 ### Performance
 
 ```javascript
-this.$Lazyload.$on('loaded', function (listener) {
-  console.table(this.$Lazyload.performance())
-})
+this.$Lazyload.$on("loaded", function (listener) {
+  console.table(this.$Lazyload.performance());
+});
 ```
 
 ![performance-demo](http://ww1.sinaimg.cn/large/69402bf8gw1fbo62ocvlaj213k09w78w.jpg)
@@ -446,9 +461,8 @@ this.$Lazyload.$on('loaded', function (listener) {
 ### Dynamic switching pictures
 
 ```vue
- <img v-lazy="lazyImg" :key="lazyImg.src">
+<img v-lazy="lazyImg" :key="lazyImg.src" />
 ```
-
 
 # Authors && Contributors
 

@@ -1,1 +1,1 @@
-declare module 'assign-deep'
+declare module "assign-deep";

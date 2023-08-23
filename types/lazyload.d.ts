@@ -1,4 +1,4 @@
-import { App } from 'vue'
+import { App } from "vue";
 type PluginFunction<T> = (Vue: App, options?: T) => void;
 
 interface PluginObject<T> {
@@ -44,7 +44,6 @@ export interface VueLazyloadOptions {
   scale?: number;
 }
 
-
 export interface Performance {
   init: number;
   loadStart: number;
@@ -62,20 +61,21 @@ export interface VueReactiveListener {
   naturalWidth: number;
   options: VueLazyloadOptions;
   rect: DOMRect;
-  $parent: Element
+  $parent: Element;
   elRenderer: Function;
   performanceData: Performance;
 }
 
 export interface VueLazyloadListenEvent {
-  (listener: VueReactiveListener, cache: boolean) : void;
+  (listener: VueReactiveListener, cache: boolean): void;
 }
 
 export interface VueLazyloadHandler {
-  $on (event: string, callback: VueLazyloadListenEvent): void;
-  $once (event: string, callback: VueLazyloadListenEvent): void;
-  $off (event: string, callback?: VueLazyloadListenEvent): void;
-  lazyLoadHandler (): void;
+  $on(event: string, callback: VueLazyloadListenEvent): void;
+  $once(event: string, callback: VueLazyloadListenEvent): void;
+  $off(event: string, callback?: VueLazyloadListenEvent): void;
+  lazyLoadHandler(): void;
 }
 
-export interface VueLazyloadPluginObject extends PluginObject<VueLazyloadOptions> {}
+export interface VueLazyloadPluginObject
+  extends PluginObject<VueLazyloadOptions> {}

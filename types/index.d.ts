@@ -8,6 +8,5 @@ export {
   VueLazyloadOptions,
   VueLazyloadHandler,
   VueReactiveListener,
-  loadImageAsyncOption
+  loadImageAsyncOption,
 } from "./lazyload";
-
