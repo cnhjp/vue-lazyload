@@ -94,7 +94,7 @@ class Lazy {
     observer,
     observerOptions,
   }: VueLazyloadOptions) {
-    this.version = "__VUE_LAZYLOAD_VERSION__";
+    this.version = `__VUE_LAZYLOAD_VERSION__`;
     this.lazyContainerMananger = null;
     this.mode = modeType.event;
     this.ListenerQueue = [];

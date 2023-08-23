@@ -51,14 +51,14 @@ build(
     input: path.resolve(__dirname, "src/index.ts"),
     external: ["vue"],
     plugins: [
-      resolve(),
-      commonjs(),
-      typescript(),
-      babel({ runtimeHelpers: true }),
+      resolve(), // 使用节点解析算法定位模块，用于在 node_modules 中使用第三方模块 使rollup在编译时能找到在node_nodules中通过npm安装的第三方模块
+      commonjs(), // 鉴于npm公开的包都是commonjs模块公开，所以需要将使用的commonjs转换为es6供rollup编译
+      typescript(), // 打印出ts语法和语义诊断错误信息
+      babel({ runtimeHelpers: true }), //  Rollup 和 Babel 之间的无缝集成
       replace({
         __VUE_LAZYLOAD_VERSION__: JSON.stringify(version),
-      }),
-      terser(),
+      }), //  Rollup 和 Babel 之间的无缝集成
+      terser(), // 压缩成es bundle
     ],
   },
   {
