@@ -65,6 +65,11 @@ class LazyContainer {
     this.update(el, binding);
   }
 
+  /**
+   * 将该元素下所有的img添加到lazy中
+   * @param el
+   * @param binding
+   */
   update(el: HTMLElement, binding: DirectiveBinding) {
     this.el = el;
     this.options = assign({}, defaultOptions, binding.value);
@@ -91,6 +96,10 @@ class LazyContainer {
     });
   }
 
+  /**
+   * 按selector获取el下元素，默认是所有img
+   * @returns
+   */
   getImgs(): Array<HTMLElement> {
     return Array.from(this.el!.querySelectorAll(this.options.selector));
   }

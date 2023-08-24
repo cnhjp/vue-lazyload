@@ -61,11 +61,11 @@ class Lazy {
   mode: string;
   ListenerQueue: Array<Tlistener>;
   TargetIndex: number;
-  TargetQueue: Array<any>;
+  TargetQueue: Array<any>; // 待监听对象队列
   options: VueLazyloadOptions;
   lazyLoadHandler: () => void;
   _imageCache: any;
-  _observer?: IntersectionObserver | null;
+  _observer?: IntersectionObserver | null; // IntersectionObserver实例
   lazyContainerMananger: LazyContainerMananger | null;
   Event!: {
     listeners: {
@@ -96,26 +96,26 @@ class Lazy {
   }: VueLazyloadOptions) {
     this.version = `__VUE_LAZYLOAD_VERSION__`;
     this.lazyContainerMananger = null;
-    this.mode = modeType.event;
+    this.mode = modeType.event; // 通过事件监听的方式加载图片还是通过IntersectionObserver
     this.ListenerQueue = [];
     this.TargetIndex = 0;
     this.TargetQueue = [];
     this.options = {
-      silent: silent,
-      dispatchEvent: !!dispatchEvent,
-      throttleWait: throttleWait || 200,
-      preLoad: preLoad || 1.3,
+      silent: silent, // 不输入debug信息
+      dispatchEvent: !!dispatchEvent, // 是否派发dom事件
+      throttleWait: throttleWait || 200, // 节流时间
+      preLoad: preLoad || 1.3, // 预加载高度比例
       preLoadTop: preLoadTop || 0,
-      error: error || DEFAULT_URL,
-      loading: loading || DEFAULT_URL,
-      attempt: attempt || 3,
+      error: error || DEFAULT_URL, // 加载失败的图片
+      loading: loading || DEFAULT_URL, // 加载中的图片
+      attempt: attempt || 3, // 尝试加载次数
       scale: scale || getDPR(scale),
-      listenEvents: listenEvents || DEFAULT_EVENTS,
-      supportWebp: supportWebp(),
+      listenEvents: listenEvents || DEFAULT_EVENTS, // 监听的事件
+      supportWebp: supportWebp(), // 是否支持webp
       filter: filter || {},
       adapter: adapter || {},
-      observer: !!observer,
-      observerOptions: observerOptions || DEFAULT_OBSERVER_OPTIONS,
+      observer: !!observer, // 是否使用IntersectionObserver
+      observerOptions: observerOptions || DEFAULT_OBSERVER_OPTIONS, // IntersectionObserver的配置
     };
     this._initEvent();
     this._imageCache = new ImageCache(200);
@@ -140,6 +140,7 @@ class Lazy {
   }
 
   /*
+   * 添加到监听队列。如果在浏览器环境下，添加window到监听目标中，并用IntersectionObserver监听el；如果存在parentNode，则添加parentNode到监听目标中
    * add lazy component to queue
    * @param  {Vue} vm lazy component instance
    * @return
@@ -277,7 +278,12 @@ class Lazy {
     this._removeListenerTarget(window);
   }
 
+  /**
+   * 根据mode是event还是observer来设置监听方式
+   * @param mode
+   */
   setMode(mode: string) {
+    // 不支持IntersectionObserver则使用事件监听
     if (!hasIntersectionObserver && mode === modeType.observer) {
       mode = modeType.event;
     }
@@ -285,6 +291,7 @@ class Lazy {
     this.mode = mode; // event or observer
 
     if (mode === modeType.event) {
+      // 如果是事件监听则释放IntersectionObserver，并为每个监听器添加事件监听
       if (this._observer) {
         this.ListenerQueue.forEach((listener) => {
           this._observer!.unobserve(listener.el as Element);
@@ -296,6 +303,7 @@ class Lazy {
         this._initListen(target.el, true);
       });
     } else {
+      // 如果是IntersectionObserver则释放事件监听，并为每个监听器添加IntersectionObserver
       this.TargetQueue.forEach((target) => {
         this._initListen(target.el, false);
       });
@@ -308,9 +316,9 @@ class Lazy {
    */
 
   /*
-   * add listener target
+   * 将待监听元素添加到TargetQueue，若已存在则childrenCount++，否则为其生成一个有唯一id的对象，并添加到TargetQueue
    * @param  {DOM} el listener target
-   * @return
+   * @return 唯一id
    */
   _addListenerTarget(el: HTMLElement | Window) {
     if (!el) return;
@@ -331,7 +339,7 @@ class Lazy {
   }
 
   /*
-   * remove listener target or reduce target childrenCount
+   * 移除监听目标，若childrenCount为0则释放监听器
    * @param  {DOM} el or window
    * @return
    */
@@ -349,7 +357,7 @@ class Lazy {
   }
 
   /*
-   * add or remove eventlistener
+   * 为DOM添加或移除事件监听：默认这些事件scroll、wheel、mousewheel、resize、animationend、transitionend、touchmove
    * @param  {DOM} el DOM or Window
    * @param  {boolean} start flag
    * @return
@@ -360,6 +368,12 @@ class Lazy {
     );
   }
 
+  /**
+   * 初始化事件队列，共三种事件，每种事件对应的listeners是一个数组
+   * $on: 添加事件
+   * $once: 添加一次性事件（最多执行一次就移除）
+   * $off: 移除事件
+   */
   _initEvent() {
     this.Event = {
       listeners: {
@@ -400,18 +414,21 @@ class Lazy {
 
   /**
    * find nodes which in viewport and trigger load
+   * 处理监听器队列，释放不在视图中的监听器，加载在视图中的监听器
    * @return
    */
   _lazyLoadHandler() {
-    const freeList: Array<Tlistener> = [];
+    const freeList: Array<Tlistener> = []; // 存储需要被释放的监听器
     this.ListenerQueue.forEach((listener, index) => {
+      // 元素不存在或父元素不存在或已加载则释放
       if (!listener.el || !listener.el.parentNode || listener.state.loaded) {
         freeList.push(listener);
       }
-      const catIn = listener.checkInView();
+      const catIn = listener.checkInView(); // 是否在视图中
       if (!catIn) return;
-      if (!listener.state.loaded) listener.load();
+      if (!listener.state.loaded) listener.load(); // 在视图中且未加载则加载
     });
+    // 释放监听器
     freeList.forEach((item) => {
       remove(this.ListenerQueue, item);
       item.$destroy && item.$destroy();
@@ -500,6 +517,11 @@ class Lazy {
     }
   }
 
+  /**
+   * 对传入的值处理返回一个特定格式的对象
+   * @param value
+   * @returns
+   */
   _valueFormatter(value: TvalueFormatterParam) {
     if (isObject(value)) {
       if (!value.src && !this.options.silent)

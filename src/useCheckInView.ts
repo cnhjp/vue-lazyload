@@ -1,6 +1,12 @@
 import { inBrowser } from "./util";
 import { reactive, Ref } from "vue";
 
+/**
+ * 检查元素是否在视图中，并返回元素的位置信息
+ * @param el
+ * @param preLoad 预加载比例
+ * @returns
+ */
 export const useCheckInView = (
   el: Ref,
   preLoad: number,

@@ -10,6 +10,9 @@ import {
 } from "vue";
 import { useCheckInView } from "./useCheckInView";
 
+/**
+ * 返回一个组件对象，mounted时该组件被添加到监听队列中，unmounted时从监听队列中移除
+ */
 export default (lazy: Lazy) => {
   return defineComponent({
     props: {

@@ -30,11 +30,18 @@ function checkIntersectionObserver(): boolean {
   return false;
 }
 
+// 监听模式：事件监听或者IntersectionObserver监听
 export const modeType = {
   event: "event",
   observer: "observer",
 };
 
+/**
+ * 移除数组中的某个元素
+ * @param arr
+ * @param item
+ * @returns
+ */
 function remove(arr: Array<any>, item: any) {
   if (!arr.length) return;
   const index = arr.indexOf(item);
@@ -181,6 +188,10 @@ function throttle(action: Function, delay: number) {
   };
 }
 
+/**
+ * 检测addEventListener是否支持passive
+ * @returns
+ */
 function testSupportsPassive(): boolean {
   if (!inBrowser) return false;
   let support = false;
@@ -191,12 +202,15 @@ function testSupportsPassive(): boolean {
       },
     });
     window.addEventListener("test", noop, opts);
-  } catch (e) {}
+  } catch (e) { }
   return support;
 }
 
 const supportsPassive = testSupportsPassive();
 
+/**
+ * 事件监听与移除
+ */
 const _ = {
   on(el: Element, type: string, func: () => void, capture = false) {
     if (supportsPassive) {
@@ -291,7 +305,7 @@ function isObject(obj: any): boolean {
   return obj !== null && typeof obj === "object";
 }
 
-function noop(): void {}
+function noop(): void { }
 
 class ImageCache {
   max: number;
